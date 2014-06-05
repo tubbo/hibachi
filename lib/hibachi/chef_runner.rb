@@ -1,19 +1,24 @@
 module Hibachi
   # Methods for running Chef on the box.
   module ChefRunner
-    CFG_PATH = '/etc/chef.json'
-    LOG_PATH = '/var/log/hibachi.log'
-
     # Run Chef for the given recipe name.
     def run_chef recipe
-      `touch #{LOG_PATH}` unless File.exists? LOG_PATH
-      `echo "Running Chef for '#{recipe}' at '#{Time.now}'..." >> #{LOG_PATH}`
-      `#{chef} -r '#{name_of(recipe)}' -J #{CFG_PATH} >> #{LOG_PATH}`
+      run "touch #{config.log_path}" unless File.exists? config.log_path
+      log "Running Chef for '#{recipe}' at '#{Time.now}'..."
+      chef "-r '#{name_of(recipe)}' -J #{config.chef_json_path}"
     end
 
     private
-    def chef
-      "chef-client -l debug"
+    def chef(options)
+      run %(chef-client -l debug #{options})
+    end
+
+    def log(message)
+      run %(echo "#{message}" >> #{config.chef_json_path})
+    end
+
+    def run(command)
+      `#{command}` and $?.success?
     end
 
     def recipe_name name
