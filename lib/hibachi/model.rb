@@ -28,13 +28,13 @@ module Hibachi
     end
 
     # Accessor for the global Chef JSON.
-    def self.chef_json
-      ChefJSON.fetch
+    def self.node
+      Node.new Hibachi.config.chef_json_path
     end
 
-    private
-    def chef_json
-      self.class.chef_json
+    # Accessor for the Chef JSON for this recipe.
+    def node
+      self.class.node[self.class.recipe_name]
     end
   end
 end

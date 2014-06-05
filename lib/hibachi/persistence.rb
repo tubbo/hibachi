@@ -1,37 +1,39 @@
-require 'hibachi/chef_json'
+require 'hibachi/node'
 
 module Hibachi
   module Persistence
+    # Write the given attrs to config and re-run Chef.
     def create
-      write_config and run_chef
+      node.merge(attributes) and run_chef
     end
     alias update create
 
-    def destroy
-      chef_json.delete id
+    # Remove the given id from the JSON and re-run Chef.
+    def destroy id
+      node.delete(id) and run_chef
     end
 
     private
-    def write_config
-      chef_json.merge attributes
-    end
-
     def run_chef
       if Hibachi.config.run_in_background
-        raise InstallActiveJobError unless using_active_job?
-        require 'hibachi/job' # we must require it here "conditionally"
-        Hibachi::Job.enqueue self
+        run_chef_in_background!
       else
         Hibachi.run_chef recipe
       end
     end
 
-    def chef_json
+    def node
       ChefJSON.fetch
     end
 
     def using_active_job?
       defined? ActiveJob::Base
+    end
+
+    def run_chef_in_background!
+      raise InstallActiveJobError unless using_active_job?
+      require 'hibachi/job' # we must require it here "conditionally"
+      Hibachi::Job.enqueue self
     end
   end
 
