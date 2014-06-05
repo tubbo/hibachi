@@ -89,7 +89,7 @@ available. They pretty much take the same parameters.
 4. Commit your tests (`git commit -am 'Tests for my feature'`)
 5. Push to the branch (`git push origin my-new-feature`)
 6. Create new Pull Request
-7. <http://shipitsquirrel.github.io/images/ship%20it%20squirrel.png>
+7. ![ship it](https://assets-cdn.github.com/images/icons/emoji/shipit.png)
 
 ## License
 
