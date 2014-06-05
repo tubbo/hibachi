@@ -20,6 +20,5 @@ module Hibachi
     # in the background. Just flip this flag to `true` and get
     # backgrounding for free.
     config.hibachi.run_in_background = false
-
   end
 end

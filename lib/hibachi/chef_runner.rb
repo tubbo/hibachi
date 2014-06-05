@@ -12,7 +12,7 @@ module Hibachi
       run_chef_in_bg(recipe) and return true if options[:background]
       run "touch #{config.log_path}" unless File.exists? config.log_path
       log "Running Chef for '#{recipe}' at '#{Time.now}'..." and
-      chef "-r '#{name_of(recipe)}' -J #{config.chef_json_path}"
+      chef "-r '#{recipe_name(recipe)}' -J #{config.chef_json_path}"
     end
 
     private

@@ -6,8 +6,8 @@ module Hibachi
   # extend'ed onto the Hibachi main module.
   module Configuration
     # Manipulate the Hibachi configuration.
-    def configure(&block)
-      yield block
+    def configure
+      yield config
     end
 
     # Shorthand access to the entire Hibachi configuration.
