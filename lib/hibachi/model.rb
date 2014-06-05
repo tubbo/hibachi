@@ -1,5 +1,5 @@
 require 'active_model'
-require 'hibachi/chef_json'
+require 'hibachi/node'
 require 'hibachi/persistence'
 require 'hibachi/configuration'
 require 'hibachi/querying'
