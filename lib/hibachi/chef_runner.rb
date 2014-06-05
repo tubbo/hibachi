@@ -1,22 +1,18 @@
+require 'hibachi/install_active_job_error'
+
 module Hibachi
-  # Methods for running Chef on the box.
   module ChefRunner
-    # Run Chef for the given recipe name.
+    # Runs the local Chef::Solo client for the given recipe. Loads the
+    # configuration specified at `Hibachi.config.chef_json_path` as
+    # Chef JSON, running only the given recipe name as specified in the
+    # method call. Used by the model backend to run Chef when they are
+    # updated, so configuration stays up to date with the JSON
+    # configuration.
     def run_chef recipe, options={}
       run_chef_in_bg(recipe) and return true if options[:background]
       run "touch #{config.log_path}" unless File.exists? config.log_path
       log "Running Chef for '#{recipe}' at '#{Time.now}'..." and
       chef "-r '#{name_of(recipe)}' -J #{config.chef_json_path}"
-    end
-
-    class InstallActiveJobError < StandardError
-      def initialize
-        @message = %{
-          You must install ActiveJob to run Chef in the background..
-
-          <https://github.com/rails/activejob>
-        }
-      end
     end
 
     private
@@ -26,15 +22,19 @@ module Hibachi
       Hibachi::Job.enqueue self
     end
 
-    def chef(options)
-      run %(chef-client -l debug #{options})
+    def using_active_job?
+      defined? ActiveJob::Base
     end
 
-    def log(message)
+    def chef options
+      run %(cd #{config.chef_dir} && chef-solo -l debug #{options})
+    end
+
+    def log message
       run %(echo "#{message}" >> #{config.chef_json_path})
     end
 
-    def run(command)
+    def run command
       `#{command}` and $?.success?
     end
 
