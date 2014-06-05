@@ -1,4 +1,5 @@
 require 'hibachi/chef_json'
+require 'hibachi/job'
 
 module Hibachi
   module Persistence
@@ -17,7 +18,11 @@ module Hibachi
     end
 
     def run_chef
-      Hibachi.run_chef recipe
+      if Hibachi.config.run_in_background
+        Hibachi::Job.enqueue self
+      else
+        Hibachi.run_chef recipe
+      end
     end
 
     def chef_json
