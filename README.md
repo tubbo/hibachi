@@ -19,7 +19,8 @@ Run the following command to install:
 $ bundle
 ```
 
-Now, you can run the generator to set up Hibachi's configuration:
+Now, you can run the generator to set up Hibachi's configuration
+(optional):
 
 ```bash
 $ rails generate hibachi:install
@@ -33,11 +34,17 @@ require 'hibachi'
 Hibachi.configure do |config|
   config.chef_json_path = "#{Rails.root}/config/chef.json"
   config.chef_dir = "#{Rails.root}/config/chef"
-  config.run_in_background = true
+  config.run_in_background = false # NOTE: will be `true` by default when ActiveJob hits 1.0
 end
 ```
 
 ## Configuration
+
+Configuration is stored in the `Rails.application.config.hibachi`
+object, which is set up by our Railtie and required upon requiring the
+gem. The default settings are specified above, but you can override them
+either in the generated initializer or in the Rails environment config,
+just use the `config.hibachi` namespace...
 
 - **chef_json_path** defines an absolute path to the JSON file that
   dictates user-specified configuration.
