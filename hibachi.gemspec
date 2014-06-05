@@ -25,4 +25,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec-rails'
   spec.add_development_dependency 'yard'
   spec.add_development_dependency 'redcarpet' # for docs in markdown
+  spec.add_development_dependency 'sqlite3' # for the dummy app
 end
