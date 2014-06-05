@@ -1,4 +1,4 @@
-require 'hibachi/chef'
+require 'hibachi/chef_json'
 
 module Hibachi
   module Persistence

@@ -39,3 +39,5 @@ module Hibachi
     def update!
       File.write path, attributes.to_json
     end
+  end
+end
