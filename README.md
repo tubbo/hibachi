@@ -44,7 +44,7 @@ Configuration is stored in the `Rails.application.config.hibachi`
 object, which is set up by our Railtie and required upon requiring the
 gem. The default settings are specified above, but you can override them
 either in the generated initializer or in the Rails environment config,
-just use the `config.hibachi` namespace...
+just use the `config.hibachi` namespace.
 
 - **chef_json_path** defines an absolute path to the JSON file that
   dictates user-specified configuration.
