@@ -9,6 +9,9 @@ module Hibachi
     # located in the Rails config dir.
     config.hibachi.chef_json_path = "#{Rails.root}/config/chef.json"
 
+    # Configure where to look for the Chef repo.
+    config.hibachi.chef_dir = "#{Rails.root}/config/chef"
+
     # Configure where the log file will be kept of all Chef runs, by
     # default it's located in the Rails log dir.
     config.hibachi.log_path = "#{Rails.root}/log/hibachi.log"
@@ -17,5 +20,6 @@ module Hibachi
     # in the background. Just flip this flag to `true` and get
     # backgrounding for free.
     config.hibachi.run_in_background = false
+
   end
 end
