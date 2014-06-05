@@ -30,7 +30,7 @@ $ rails generate hibachi:install
 When you want to manipulate settings, generate a new Hibachi model:
 
 ```bash
-$ rails generate hibachi:model NetworkInterface
+$ rails generate hibachi:model NetworkInterface name dhcp address netmask gateway
 ```
 
 You'll get a file that looks like this:
