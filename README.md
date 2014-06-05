@@ -83,11 +83,13 @@ available. They pretty much take the same parameters.
 
 ## Contributing
 
-1. Fork it ( http://github.com/<my-github-username>/hibachi/fork )
+1. Fork it ( http://github.com/tubbo/hibachi/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+4. Commit your tests (`git commit -am 'Tests for my feature'`)
+5. Push to the branch (`git push origin my-new-feature`)
+6. Create new Pull Request
+7. <http://shipitsquirrel.github.io/images/ship%20it%20squirrel.png>
 
 ## License
 
