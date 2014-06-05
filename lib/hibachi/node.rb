@@ -67,7 +67,7 @@ module Hibachi
 
     # All attributes as parsed from the Chef JSON.
     def attributes
-      @attributes ||= JSON.parse chef_json
+      @attributes ||= JSON.parse(chef_json).with_indifferent_access
     end
 
     private
@@ -76,7 +76,7 @@ module Hibachi
     end
 
     def update!
-      File.write path, attributes.to_json
+      File.write file_path, attributes.to_json
     end
 
     def file_exists

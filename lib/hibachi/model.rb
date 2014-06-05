@@ -19,7 +19,13 @@ module Hibachi
     include Recipe
     include Querying
 
+    # Store all attributes in this Hash.
     attr_accessor :attributes
+
+    def initialize(from_attrs)
+      self.attributes = from_attrs
+      super
+    end
 
     # The JSON representation of each Model object is simply its
     # attributes exposed as JSON.
@@ -29,12 +35,12 @@ module Hibachi
 
     # Accessor for the global Chef JSON.
     def self.node
-      Node.new Hibachi.config.chef_json_path
+      Node.new file_path: Hibachi.config.chef_json_path
     end
 
-    # Accessor for the Chef JSON for this recipe.
+    # Accessor for the global Chef JSON in an instance.
     def node
-      self.class.node[self.class.recipe_name]
+      self.class.node
     end
   end
 end

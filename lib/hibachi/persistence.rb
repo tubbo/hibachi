@@ -23,9 +23,17 @@ module Hibachi
       clear and chef
     end
 
+    def persisted?
+      @persisted
+    end
+
+    def new_record?
+      (not persisted?)
+    end
+
     private
     def persist
-      node.merge attributes
+      @persisted ||= node.merge recipe => attributes
     end
 
     def clear
@@ -33,15 +41,11 @@ module Hibachi
     end
 
     def chef
-      Hibachi.run_chef recipe_name, background: run_in_background?
+      Hibachi.run_chef recipe, background: run_in_background?
     end
 
     def run_in_background?
       Hibachi.config.run_in_background
-    end
-
-    def node
-      ChefJSON.fetch
     end
   end
 end
