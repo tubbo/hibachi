@@ -5,4 +5,9 @@ require 'yard/rake/yardoc_task'
 
 RSpec::Core::RakeTask.new :test
 
-YARD::Rake::YardocTask.new :doc
+YARD::Rake::YardocTask.new :doc do |t|
+  t.files = ['lib/**', 'README.md']
+  t.options = {
+    markup: 'markdown'
+  }
+end
