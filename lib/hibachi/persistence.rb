@@ -2,48 +2,46 @@ require 'hibachi/node'
 
 module Hibachi
   module Persistence
-    # Write the given attrs to config and re-run Chef.
-    def create
-      node.merge(attributes) and run_chef
+    extend ActiveSupport::Concern
+
+    module ClassMethods
+      # Write the given attrs to config and re-run Chef.
+      def create from_attributes={}
+        model = new from_attributes
+        model.save
+        model
+      end
     end
-    alias update create
+
+    # Merge attrs and write to JSON.
+    def save
+      persist and chef
+    end
 
     # Remove the given id from the JSON and re-run Chef.
-    def destroy id
-      node.delete(id) and run_chef
+    def destroy
+      clear and chef
     end
 
     private
-    def run_chef
-      if Hibachi.config.run_in_background
-        run_chef_in_background!
-      else
-        Hibachi.run_chef recipe
-      end
+    def persist
+      node.merge attributes
+    end
+
+    def clear
+      node.delete id
+    end
+
+    def chef
+      Hibachi.run_chef recipe_name, background: run_in_background?
+    end
+
+    def run_in_background?
+      Hibachi.config.run_in_background
     end
 
     def node
       ChefJSON.fetch
-    end
-
-    def using_active_job?
-      defined? ActiveJob::Base
-    end
-
-    def run_chef_in_background!
-      raise InstallActiveJobError unless using_active_job?
-      require 'hibachi/job' # we must require it here "conditionally"
-      Hibachi::Job.enqueue self
-    end
-  end
-
-  class InstallActiveJobError < StandardError
-    def initialize
-      @message = %{
-        You must install ActiveJob to run Chef in the background..
-
-        <https://github.com/rails/activejob>
-      }
     end
   end
 end

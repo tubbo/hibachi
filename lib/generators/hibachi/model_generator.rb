@@ -34,11 +34,7 @@ module Hibachi
       end
 
       def derived_recipe_name
-        options[:recipe] || default_recipe_name
-      end
-
-      def default_recipe_name
-        ":#{file_path.tableize}"
+        options[:recipe] || file_path.tableize
       end
     end
   end
