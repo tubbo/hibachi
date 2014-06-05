@@ -3,13 +3,16 @@ require 'hibachi/chef_json'
 require 'hibachi/persistence'
 require 'hibachi/configuration'
 require 'hibachi/querying'
+require 'hibachi/recipe'
 
 module Hibachi
   class Model
     include ActiveModel::Model
+
     include Persistence
     include Configuration
-    extend  Querying
+    include Recipe
+    include Querying
 
     attr_accessor :attributes
 
