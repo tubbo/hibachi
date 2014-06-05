@@ -25,6 +25,29 @@ Now, you can run the generator to set up Hibachi's configuration:
 $ rails generate hibachi:install
 ```
 
+This will generate the following Rails initializer:
+
+```ruby
+require 'hibachi'
+
+Hibachi.configure do |config|
+  config.chef_json_path = "#{Rails.root}/config/chef.json"
+  config.chef_dir = "#{Rails.root}/config/chef"
+  config.run_in_background = true
+end
+```
+
+## Configuration
+
+- **chef_json_path** defines an absolute path to the JSON file that
+  dictates user-specified configuration.
+- **chef_dir** defines an absolute path to the Chef repo that has been
+  installed on this machine.
+- **run_in_background** is a flag that dictates whether to queue Chef
+  runs in a background job or run them directly. The default is false,
+  but *will* be true whenever ActiveJob is merged in, as this method has
+  the best performance.
+
 ## Usage
 
 When you want to manipulate settings, generate a new Hibachi model:
