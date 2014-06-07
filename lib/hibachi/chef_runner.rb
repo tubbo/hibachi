@@ -9,6 +9,7 @@ module Hibachi
     # updated, so configuration stays up to date with the JSON
     # configuration.
     def run_chef recipe, options={}
+      return true unless config.run_chef
       run_chef_in_bg(recipe) and return true if options[:background]
       run "touch #{config.log_path}" unless File.exists? config.log_path
       log "Running Chef for '#{recipe}' at '#{Time.now}'..." and
