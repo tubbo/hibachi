@@ -111,6 +111,57 @@ definition.
 Other AR-like methods such as `update()` and `destroy()` are also
 available. They pretty much take the same parameters.
 
+### Singletons
+
+Another concept in configuration is the idea of a "singleton", that is,
+a model that exists without the need for enumeration. For example, say
+you have a recipe that configures Nginx like so:
+
+```ruby
+  template "install site configuration" do
+    source "site.conf.erb"
+    action :create
+  end
+
+  nginx_site node[:app_cookbook][:nginx_site][:server_name] do
+    action :enable
+  end
+```
+
+You can configure that attribute with your front-end app by generating a
+`Hibachi::Model` like this:
+
+```ruby
+class NginxSite < Hibachi::Model
+  recipe :nginx_site, :type => :singleton
+  attr_accessor :server_name
+end
+```
+
+This affects the way attributes are both looked up and persisted by
+Hibachi. Instead of treating the attribute as if it was an Array of
+Hashes, Hibachi will write to the attribute directly as a Hash. So when
+doing this:
+
+```ruby
+site = NginxSite.fetch
+site.update :server_name => 'www.example.org'
+```
+
+You'll get **chef.json** that looks like this (using the `:app_cookbook`
+namespace from before):
+
+```json
+{
+  "app_cookbook": {
+    "nginx_site": {
+      "server_name": "www.example.org"
+    }
+  }
+}
+```
+
+
 ## Contributing
 
 1. Fork it ( http://github.com/tubbo/hibachi/fork )

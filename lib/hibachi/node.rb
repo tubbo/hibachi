@@ -50,13 +50,6 @@ module Hibachi
       merge! key => value
     end
 
-    def update recipe, with_attributes={}
-      case self[recipe].class
-      when Array
-        self[recipe].push with_attributes
-      self[recipe] = self[recipe].merge with_attributes
-    end
-
     # Merge incoming Hash with the Chef JSON.
     def merge! with_new_attributes={}
       attributes.merge! with_new_attributes

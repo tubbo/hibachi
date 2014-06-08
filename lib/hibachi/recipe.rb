@@ -1,5 +1,7 @@
 module Hibachi
-  # Methods for manipulating and reading the recipe of the model class.
+  # Methods for manipulating and reading the recipe of the model class,
+  # as well as defining whether this recipe is a singleton or
+  # collection.
   module Recipe
     extend ActiveSupport::Concern
 
@@ -9,8 +11,10 @@ module Hibachi
       # Set the recipe on this model. You can feel free to omit the
       # '::default', but if you have a '::' in there the code will not
       # touch this name.
-      def recipe name
+      def recipe name, options={}
         self.recipe_name = name
+        from_opts = "#{options[:type]}" || 'collection'
+        self.recipe_type = ActiveSupport::StringInquirer.new from_opts
       end
     end
 
@@ -19,9 +23,14 @@ module Hibachi
       self.class.recipe_name
     end
 
-    protected
-    def cookbook
-      Hibachi.config.cookbook
+    # Return the recipe type as set in the class definition. It's a
+    # StringInquirer, so it defines methods that allow us to test
+    # whether this is a `collection?` or a `singleton?`.
+    def type
+      self.class.recipe_type
     end
+
+    delegate :collection?, :to => :type
+    delegate :singleton?, :to => :type
   end
 end
