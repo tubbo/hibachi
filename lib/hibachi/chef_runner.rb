@@ -10,10 +10,14 @@ module Hibachi
     # configuration.
     def run_chef recipe, options={}
       return true unless config.run_chef
-      run_chef_in_bg(recipe) and return true if options[:background]
-      run "touch #{config.log_path}" unless File.exists? config.log_path
-      log "Running Chef for '#{recipe}' at '#{Time.now}'..." and
-      chef "-r '#{recipe_name(recipe)}' -J #{config.chef_json_path}"
+
+      if options[:background]
+        run_chef_in_bg(recipe) and return true
+      else
+        run "touch #{config.log_path}" and
+        log "Running Chef for '#{recipe}' at '#{Time.now}'..." and
+        chef "-r '#{recipe_name(recipe)}' -J #{config.chef_json_path}"
+      end
     end
 
     private
@@ -40,8 +44,11 @@ module Hibachi
     end
 
     def recipe_name name
-      return "recipe[#{name}]" if name =~ /\:\:/
-      "recipe[#{name}::default]"
+      if name =~ /\:\:/
+        "recipe[#{cookbook}::#{name}]"
+      else
+        "recipe[#{cookbook}::#{name}::default]"
+      end
     end
   end
 end
