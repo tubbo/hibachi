@@ -65,9 +65,14 @@ module Hibachi
       update!
     end
 
-    # All attributes as parsed from the Chef JSON.
     def attributes
-      @attributes ||= JSON.parse(chef_json).with_indifferent_access
+      @attributes ||= parsed_json_attributes[Hibachi.config.cookbook]
+    end
+
+    protected
+    # All attributes as parsed from the Chef JSON.
+    def parsed_json_attributes
+      JSON.parse(chef_json).with_indifferent_access
     end
 
     private
