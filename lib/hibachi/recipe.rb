@@ -18,5 +18,10 @@ module Hibachi
     def recipe
       self.class.recipe_name
     end
+
+    protected
+    def cookbook
+      Hibachi.config.cookbook
+    end
   end
 end
