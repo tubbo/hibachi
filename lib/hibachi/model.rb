@@ -1,8 +1,6 @@
 require 'active_model'
 require 'hibachi/node'
-require 'hibachi/persistence'
-require 'hibachi/configuration'
-require 'hibachi/querying'
+require 'hibachi/store'
 require 'hibachi/recipe'
 
 module Hibachi
@@ -14,10 +12,8 @@ module Hibachi
   class Model
     include ActiveModel::Model
 
-    include Persistence
-    include Configuration
     include Recipe
-    include Querying
+    include Store
 
     # Store all attributes in this Hash.
     attr_accessor :attributes
@@ -41,6 +37,11 @@ module Hibachi
     # Accessor for the global Chef JSON in an instance.
     def node
       self.class.node
+    end
+
+    protected
+    def config
+      Hibachi.config
     end
   end
 end
