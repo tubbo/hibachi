@@ -26,4 +26,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'yard'
   spec.add_development_dependency 'redcarpet' # for docs in markdown
   spec.add_development_dependency 'sqlite3' # for the dummy app
+  spec.add_development_dependency 'pry'
+  spec.add_development_dependency 'pry-byebug'
 end

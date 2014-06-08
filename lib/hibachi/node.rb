@@ -16,7 +16,7 @@ module Hibachi
     validates :file_path, presence: true
 
     validate :file_exists
-    #validate :file_not_in_use
+    validate :has_cookbook_attributes
 
     # Derive config from file at given path.
     def self.find at_path=""
@@ -30,17 +30,15 @@ module Hibachi
     def exists?
       @exists ||= File.exists? file_path
     end
-
-    # Test if the file is in use, in which case we do not want to write
-    # to it.
-    def in_use?
-      @in_use ||= `lsof #{file_path}` == ""
-    end
+    alias present? exists?
 
     # Iterate through all attributes.
     def each
       attributes.each { |attr| yield attr }
     end
+
+    delegate :empty?, :to => :attributes
+    delegate :any?, :to => :attributes
 
     # Find the attribute at a given key.
     def [] key
@@ -49,13 +47,19 @@ module Hibachi
 
     # Set the attribute at a given key.
     def []= key, value
-      attributes.merge key => value
-      update!
+      merge! key => value
+    end
+
+    def update recipe, with_attributes={}
+      case self[recipe].class
+      when Array
+        self[recipe].push with_attributes
+      self[recipe] = self[recipe].merge with_attributes
     end
 
     # Merge incoming Hash with the Chef JSON.
-    def merge with_new_attributes={}
-      attributes.merge with_new_attributes
+    def merge! with_new_attributes={}
+      attributes.merge! with_new_attributes
       update!
     end
 
@@ -65,9 +69,14 @@ module Hibachi
       update!
     end
 
+    # Attributes as initially populated by the parsed JSON file. Scoped
+    # by the global cookbook.
     def attributes
-      @attributes ||= parsed_json_attributes[Hibachi.config.cookbook]
+      @attributes ||= parsed_json_attributes[Hibachi.config.cookbook] || {}
     end
+
+    delegate :any?, :to => :attributes
+    delegate :empty?, :to => :attributes
 
     protected
     # All attributes as parsed from the Chef JSON.
@@ -81,15 +90,24 @@ module Hibachi
     end
 
     def update!
-      File.write file_path, attributes.to_json
+      File.write file_path, pretty_formatted_json
+      true
+    rescue StandardError => exception
+      logger.error exception.message
+      exception.backtrace.each { |line| logger.error line }
+      false
+    end
+
+    def pretty_formatted_json
+      JSON.pretty_generate Hibachi.config.cookbook => attributes
     end
 
     def file_exists
       errors.add :file, "'#{file_path}' does not exist" unless exists?
     end
 
-    def file_not_in_use
-      errors.add :file, "'#{file_path}' is in use" if in_use?
+    def has_cookbook_attributes
+      errors.add :cookbook, "could not be parsed from JSON" unless any?
     end
   end
 end

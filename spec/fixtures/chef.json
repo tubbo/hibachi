@@ -1,1 +1,7 @@
-{"mock_settings":[{"name":"test","is_active":false}]}
+{
+  "test": {
+    "mock_settings": {
+      "name": "store"
+    }
+  }
+}

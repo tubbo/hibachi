@@ -11,4 +11,8 @@ class MockSetting < Hibachi::Model
   def active?
     !!is_active
   end
+
+  def id
+    name
+  end
 end

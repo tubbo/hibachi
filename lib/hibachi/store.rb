@@ -13,7 +13,7 @@ module Hibachi
 
       # Find everything from the JSON.
       def all
-        node[recipe].map { |from_params| new from_params }
+        node[recipe_name].map { |from_params| new from_params }
       end
 
       # Find all objects of this type matching the given search
@@ -58,7 +58,7 @@ module Hibachi
 
     private
     def persist
-      @persisted ||= node.merge recipe => attributes
+      @persisted ||= node.update recipe_name, attributes
     end
 
     def clear
