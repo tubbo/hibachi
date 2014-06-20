@@ -62,6 +62,12 @@ module Hibachi
       update!
     end
 
+    # Delete all attributes from this recipe.
+    def delete!
+      @attributes = {}
+      update!
+    end
+
     # Attributes as initially populated by the parsed JSON file. Scoped
     # by the global cookbook.
     def attributes
