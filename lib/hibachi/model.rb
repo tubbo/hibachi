@@ -1,7 +1,7 @@
 require 'active_model'
-require 'hibachi/node'
-require 'hibachi/store'
 require 'hibachi/recipe'
+require 'hibachi/store'
+require 'hibachi/node'
 
 module Hibachi
   # A Rails model backend for describing machine configuration and
@@ -11,13 +11,13 @@ module Hibachi
   # representation.
   class Model
     include ActiveModel::Model
-
-    include Recipe
-    include Store
+    include Recipe, Store
 
     # Store all attributes in this Hash.
     attr_accessor :attributes
 
+    # Set attributes to the main collector before assigning them to
+    # methods.
     def initialize(from_attrs)
       self.attributes = from_attrs
       super
@@ -31,7 +31,7 @@ module Hibachi
 
     # Accessor for the global Chef JSON.
     def self.node
-      Node.new file_path: Hibachi.config.chef_json_path
+      Node.new(file_path: Hibachi.config.chef_json_path)
     end
 
     # Accessor for the global Chef JSON in an instance.
