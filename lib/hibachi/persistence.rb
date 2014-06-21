@@ -8,8 +8,9 @@ module Hibachi
       persist and chef
     end
 
+    # Update an existing model's attributes.
     def update_attributes(attrs={})
-      merge(attrs) and update and save
+      merge(attrs) and save
     end
 
     # Remove the given id from the JSON and re-run Chef.
@@ -17,11 +18,16 @@ module Hibachi
       clear and chef
     end
 
+    # Test if this model appears in the Node JSON.
     def persisted?
-      return node[recipe_name][id].present? unless singleton?
-      node[recipe_name].present?
+      if collection?
+        node[recipe][id].present?
+      else
+        node[recipe].present?
+      end
     end
 
+    # Returns `true` if it's not currently being persisted.
     def new_record?
       (not persisted?)
     end
@@ -44,7 +50,7 @@ module Hibachi
     end
 
     def create
-      node.merge! recipe_name => new_recipe_attributes
+      node.merge! recipe => new_recipe_attributes
     end
 
     def update
@@ -53,9 +59,9 @@ module Hibachi
 
     def new_recipe_attributes
       if singleton?
-        node[recipe_name].merge attributes
+        node[recipe].merge attributes
       else
-        node[recipe_name].merge id => attributes
+        node[recipe].merge id => attributes
       end
     end
 
@@ -63,7 +69,7 @@ module Hibachi
       if singleton?
         node.delete!
       else
-        node.merge! recipe_name => nil
+        node.delete id
       end
     end
   end
