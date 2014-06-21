@@ -6,16 +6,28 @@ module Hibachi
     extend ActiveSupport::Concern
 
     module ClassMethods
-      cattr_accessor :recipe_name
+      cattr_accessor :recipe_name, :recipe_type
 
       # Set the recipe on this model. You can feel free to omit the
       # '::default', but if you have a '::' in there the code will not
-      # touch this name.
+      # touch this name. By default, this creates a 'collection' recipe.
       def recipe name, options={}
         self.recipe_name = name
         from_opts = "#{options[:type]}" || 'collection'
         self.recipe_type = ActiveSupport::StringInquirer.new from_opts
       end
+
+      # An alias for `recipe` to give parity to `singleton_recipe`.
+      alias collection_recipe recipe
+
+      # Shorthand for creating a 'singleton' recipe, you can also simply
+      # pass :type => :singleton in the `recipe` call.
+      def singleton_recipe name
+        recipe name, :type => :singleton
+      end
+
+      delegate :collection?, :to => :recipe_type
+      delegate :singleton?, :to => :recipe_type
     end
 
     # Return the recipe name as set in the class definition.
