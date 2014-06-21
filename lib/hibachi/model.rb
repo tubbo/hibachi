@@ -30,8 +30,8 @@ module Hibachi
 
     # The JSON representation of each Model object is simply its
     # attributes exposed as JSON.
-    def to_json
-      attributes.to_json
+    def to_json(*arguments)
+      @json ||= attributes.to_json
     end
 
     protected
