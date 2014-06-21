@@ -2,7 +2,7 @@ module Hibachi
   module Querying
     # Write the given attrs to config and re-run Chef.
     def create from_attributes={}
-      model = fetch_or_initialize from_attributes
+      model = new from_attributes
       model.save
       model
     end
@@ -30,21 +30,19 @@ module Hibachi
       }
     end
 
-    # Find a given model by name, or return `nil`.
+    # Find a given model by name, or return `nil`. Aliases to `fetch` if
+    # this model is a singleton.
     def find by_name=""
       return fetch if singleton?
       where(name: by_name).first
     end
 
-    private
-    def fetch_or_initialize from_attributes={}
-      if singleton?
-        m = fetch
-        m.attributes = m.attributes.merge from_attributes
-        m
-      else
-        new from_attributes
-      end
+    # Use all the attributes in this recipe to deploy the model if this
+    # is a Singleton.
+    def fetch
+      model = new node[recipe_name]
+      model.valid?
+      model
     end
   end
 end
