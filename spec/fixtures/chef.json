@@ -1,7 +1,4 @@
 {
   "test": {
-    "mock_settings": {
-      "name": "store"
-    }
   }
 }

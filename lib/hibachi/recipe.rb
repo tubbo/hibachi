@@ -13,8 +13,8 @@ module Hibachi
       # touch this name. By default, this creates a 'collection' recipe.
       def recipe name, options={}
         self.recipe_name = name
-        from_opts = "#{options[:type]}" || 'collection'
-        self.recipe_type = ActiveSupport::StringInquirer.new from_opts
+        from_opts = options[:type] || 'collection'
+        self.recipe_type = ActiveSupport::StringInquirer.new from_opts.to_s
       end
 
       # An alias for `recipe` to give parity to `singleton_recipe`.
@@ -38,11 +38,11 @@ module Hibachi
     # Return the recipe type as set in the class definition. It's a
     # StringInquirer, so it defines methods that allow us to test
     # whether this is a `collection?` or a `singleton?`.
-    def type
+    def recipe_type
       self.class.recipe_type
     end
 
-    delegate :collection?, :to => :type
-    delegate :singleton?, :to => :type
+    delegate :collection?, :to => :recipe_type
+    delegate :singleton?, :to => :recipe_type
   end
 end

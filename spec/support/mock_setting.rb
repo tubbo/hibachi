@@ -1,10 +1,9 @@
 require 'hibachi'
 
 class MockSetting < Hibachi::Model
-
   recipe :mock_settings
 
-  attr_accessor :attributes, :name, :is_active
+  attr_accessor :name, :is_active
 
   validates :name, :presence => true
 

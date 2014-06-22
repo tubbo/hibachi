@@ -1,9 +1,11 @@
 require 'spec_helper'
-require 'hibachi/store'
+require 'hibachi/persistence'
 
 module Hibachi
-  describe Store do
+  describe Persistence do
     it "creates a new model from scratch" do
+      expect(MockSetting.recipe_name).to eq(:mock_settings)
+      expect(MockSetting).to be_singleton
       setting = MockSetting.create(name: 'from-scratch')
       expect(setting).to be_persisted
       expect(setting.destroy).to eq(true)

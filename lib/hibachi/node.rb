@@ -11,7 +11,7 @@ module Hibachi
     include ActiveModel::Model
     include Enumerable
 
-    attr_accessor :attributes, :file_path
+    attr_accessor :file_path
 
     validates :file_path, presence: true
 
@@ -45,7 +45,7 @@ module Hibachi
       attributes[key]
     end
 
-    # Set the attribute at a given key.
+    # Set the attribute at a given key and update the JSON.
     def []= key, value
       merge! key => value
     end
@@ -74,8 +74,10 @@ module Hibachi
       @attributes ||= parsed_json_attributes[Hibachi.config.cookbook] || {}
     end
 
-    delegate :any?, :to => :attributes
-    delegate :empty?, :to => :attributes
+    def method_missing(method, *arguments)
+      attributes.send method, *arguments if attributes.respond_to? method
+      super
+    end
 
     protected
     # All attributes as parsed from the Chef JSON.

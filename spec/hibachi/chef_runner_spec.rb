@@ -13,12 +13,12 @@ module Hibachi
     end
 
     it "runs chef" do
-      subject.stub(:run) { true }
+      allow(subject).to receive(:run).and_return true
       expect(subject.run_chef(:pro)).to eq(true)
     end
 
     it "runs chef in the background" do
-      subject.stub(:run_chef_in_bg) { true }
+      allow(subject).to receive(:run_chef_in_bg).and_return true
       expect(subject.run_chef(:pro, background: true)).to eq(true)
     end
   end

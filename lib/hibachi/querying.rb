@@ -1,5 +1,7 @@
 module Hibachi
   module Querying
+    include Enumerable
+
     # Write the given attrs to config and re-run Chef.
     def create from_attributes={}
       model = new from_attributes
@@ -11,6 +13,10 @@ module Hibachi
     def all
       return fetch if singleton?
       node[recipe_name].map { |from_params| new from_params }
+    end
+
+    def each
+      all.each { |model| yield model }
     end
 
     # Find all objects of this type matching the given search
