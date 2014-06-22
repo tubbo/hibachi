@@ -1,6 +1,6 @@
 module Hibachi
   # Backend data store methods for the Hibachi::Model
-  module Store
+  module Persistence
     extend ActiveSupport::Concern
 
     # Merge attrs and write to JSON.
