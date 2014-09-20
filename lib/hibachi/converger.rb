@@ -2,7 +2,7 @@ require 'hibachi/install_active_job_error'
 require 'active_model/model'
 
 module Hibachi
-  class ChefRunner
+  class Converger
     include ActiveModel::Model
 
     # The recipe name that is to be run.
@@ -19,13 +19,13 @@ module Hibachi
 
     # Runs the local Chef::Client for the given recipe.
     def self.run recipe, options={}
-      runner = new recipe: recipe, params: options
-      runner.chef!
-      runner
+      converger = new recipe: recipe, params: options
+      converger.chef!
+      converger
     end
 
     # Run Chef on the instance of this runner.
-    def chef!
+    def converge!
       return true unless should_run?
       run_chef_in_background and return true if background?
       ensure_config_exists and run_chef

@@ -2,7 +2,7 @@ require 'active_model'
 
 require 'hibachi/model/recipe'
 require 'hibachi/model/collection'
-require 'hibachi/chef_runner'
+require 'hibachi/model/node_attributes'
 
 module Hibachi
   # Model class by which all Rails models that are saving to Chef
@@ -40,23 +40,25 @@ module Hibachi
     include ActiveModel::Model
     include Recipe
     include Collection
+    include NodeAttributes
 
-    # The callback lifecycle in the model is as follows:
+    # Define callbacks for the model persistence lifecycle.
     #
     # - before_validation
-    # - validations
     # - after_validation
     # - before_save
     # - before_{update|create}
-    # - before_chef
-    # - after_chef
+    # - before_upload
+    # - after_upload
+    # - before_converge
+    # - after_converge
     # - after_{update|create}
     # - after_save
     #
     # It adheres to the same order of operations that the model goes
     # through, which is to first update the Chef Server and local object
     # with the new attributes, and then run Chef on the box.
-    define_model_callbacks :save, :update, :chef
+    define_model_callbacks :validation, :save, :create, :update, :upload, :converge
 
     attr_reader :attributes
 
@@ -66,72 +68,95 @@ module Hibachi
       @attributes = attributes
     end
 
-    # Simply reload all attrs from the Chef server.
+    # Instantiate a new model object and load it with attributes from
+    # the Chef server.
     def self.fetch
       new.reload!
     end
 
+    # Run validations and callbacks before and after validation. Returns
+    # `true` if no errors are found after all validators are run.
+    def valid?
+      run_callbacks :validation do
+        super
+      end
+    end
+
+    # Tests whether this attribute record is in the current node
+    # attributes. If the model is not configured to be a collection,
+    # this always returns false.
+    def new_record?
+      return false unless collection?
+      not persisted?
+    end
+
+    # Tests whether the attributes in this class are equal to the
+    # attributes on the ChefServer.
+    def persisted?
+      if collection?
+        attributes_from_chef_server[id] == attributes
+      else
+        attributes_from_chef_server == attributes
+      end
+    end
+
     # Update the current node and run Chef.
     def save
+      return false unless valid?
       run_callbacks :save do
-        update_server and run_chef
+        create if new_record?
+        upload and converge
+      end
+    end
+
+    # Update all attributes and save to the current node.
+    def update_attributes(to_new_attributes={})
+      run_callbacks :update do
+        write(to_new_attributes) and save
       end
     end
 
     # Write the attributes as pulled down from the Chef server to memory
-    # on this object.
+    # on this object, and then return the model object itself.
     def reload!
       write attributes_from_chef_server
       self
     end
 
-    # Update all attributes and save to the current node.
-    def update_attributes(to_new_attributes={})
-      write(to_new_attributes) and save
-    end
-
-    # Accessor for the Chef Server, which 
-    def self.chef_server
-      @chef_server = ChefServer.connect
-    end
-
-    def self.node
-      chef_server.current_node
-    end
-
     private
-    def update_server
-      run_callbacks :update do
+    # Run callbacks for uploading and upload node configuration to the
+    # Chef server.
+    def upload
+      run_callbacks :upload do
         logger.debug "Updating node config for #{namespace} => #{attributes.to_json}"
-        node.update_attributes namespace => node_attributes
+        upload!
       end
     end
 
-    def run_chef
-      run_callbacks :chef do
-        ChefRunner.run recipe, in_background_if_configured
+    # Run callbacks for convergence and converge this node with
+    # Chef::Client.
+    def converge
+      run_callbacks :converge do
+        logger.debug "Converging node"
+        converge!
       end
     end
 
+    # Merge the given hash of attributes with the object's attributes
+    # hash, and write values to each setter that exists.
     def write(new_attributes={})
       @attributes.merge! new_attributes
+
       attributes.each do |key, value|
         writer = "#{key}="
         send writer, value if respond_to? writer
       end
-      valid?
+
+      true # always continue forward
     end
 
     def in_background_if_configured
       { background: Hibachi.config.run_chef_in_background }
-    end
-
-    def attributes_from_chef_server
-      if namespace.present?
-        chef_server.current_node.attributes[cookbook][namespace]
-      else
-        chef_server.current_node.attributes[cookbook]
-      end
     end
   end
 end
