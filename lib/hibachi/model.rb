@@ -129,7 +129,7 @@ module Hibachi
     def upload
       run_callbacks :upload do
         logger.debug "Updating node config for #{namespace} => #{attributes.to_json}"
-        upload!
+        node.update_attributes namespace => node_attributes
       end
     end
 
@@ -138,7 +138,7 @@ module Hibachi
     def converge
       run_callbacks :converge do
         logger.debug "Converging node"
-        converge!
+        Hibachi.run_chef recipe, in_background_if_configured
       end
     end
 

@@ -1,5 +1,4 @@
 require 'hibachi/chef_server'
-require 'hibachi/converger'
 
 module Hibachi
   class Model
@@ -24,14 +23,6 @@ module Hibachi
       end
 
       protected
-      def upload!
-        node.update_attributes namespace => node_attributes
-      end
-
-      def converge!
-        Converger.run recipe, in_background_if_configured
-      end
-
       # Attributes loaded directly from the Chef server for this model.
       def attributes_from_chef_server
         case true
