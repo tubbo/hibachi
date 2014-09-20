@@ -12,6 +12,13 @@ module Hibachi
     Rails.application.config.hibachi
   end
 
+  # Provide a block to manipulate config settings in a Rails
+  # initializer.
+  def self.configure
+    yield config
+  end
+
+  # Converge on the given node.
   def self.run_chef *arguments
     Converger.run *arguments
   end
