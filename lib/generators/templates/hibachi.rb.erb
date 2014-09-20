@@ -16,21 +16,12 @@ Hibachi.configure do |config|
   # Chef Server, but rather a Chef Zero implementation on the same
   # box or a shared Chef Server between multiple installations. The
   # application's configuration should be allowed to be overridden.
-  #config.hibachi.chef = {
-  #  server_url: '127.0.0.1:5986',
-  #  client_name: 'hibachi',
-  #  client_key: "#{Rails.root}/config/chef/client.pem"
-  #}
+  #config.hibachi.chef[:server_url] = '127.0.0.1:5986'
+  #config.hibachi.chef[:client_name] = 'hibachi'
+  #config.hibachi.chef[:client_key] = '/etc/chef/client.pem'
 
   # This should probably be changed to the actual FQDN of this node.
   #config.hibachi.node_name = 'your-node-name'
-
-  # Where to look for the cookbook.
-  #config.hibachi.cookbook_path = "#{Rails.root}/config/chef/cookbook"
-
-  # A path to the node JSON that will be stored in the application for
-  # safe keeping.
-  #config.hibachi.node_path = "#{Rails.root}/config/chef/node.json"
 
   # Configure where the log file will be kept of all Chef runs, by
   # default it's located in the Rails log dir.

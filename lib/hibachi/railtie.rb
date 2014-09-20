@@ -18,18 +18,11 @@ module Hibachi
     config.hibachi.chef = {
       server_url: '127.0.0.1:5986',
       client_name: 'hibachi',
-      client_key: "#{Rails.root}/config/chef/client.pem"
+      client_key: "/etc/chef/client.pem"
     }
 
-    # This should probably be changed to the actual FQDN of this node.
-    config.hibachi.node_name = 'hibachi.psychedeli.ca'
-
-    # Where to look for the cookbook.
-    config.hibachi.cookbook_path = "#{Rails.root}/config/chef/cookbook"
-
-    # A path to the node JSON that will be stored in the application for
-    # safe keeping.
-    config.hibachi.node_path = "#{Rails.root}/config/chef/node.json"
+    # Defaults to the hostname of the box we're running on.
+    config.hibachi.node_name = nil
 
     # Configure where the log file will be kept of all Chef runs, by
     # default it's located in the Rails log dir.
@@ -43,5 +36,11 @@ module Hibachi
     # installed, Hibachi will throw an error whenever you try and run
     # Chef.
     config.hibachi.run_in_background = false
+
+    # If the node name has not been set, run `hostname` to find it, and
+    # just re-set it as `nil` if something goes wrong.
+    initializer "hibachi.ensure_node_name" do
+      config.hibachi.node_name ||= `hostname` rescue nil
+    end
   end
 end

@@ -10,6 +10,10 @@ module Hibachi
 
     # Get the current node for this application.
     def current_node
+      unless Hibachi.config.node_name.present?
+        raise RuntimeError, "You must set config.hibachi.node_name"
+      end
+
       @current_node ||= node.find Hibachi.config.node_name
     end
 
