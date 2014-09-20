@@ -1,42 +1,54 @@
 require 'active_model'
 
-require 'hibachi/recipe'
-require 'hibachi/persistence'
-require 'hibachi/provisioning'
-require 'hibachi/querying'
+require 'hibachi/model/recipe'
+require 'hibachi/chef_runner'
 
 module Hibachi
-  # A Rails model backend for describing machine configuration and
-  # exposing such configuration to manipulation by the end user.
-  # Hibachi::Model is subclassed like an ActiveRecord::Base, you define
-  # attributes on the class that map to attributes in each model's JSON
-  # representation.
+  # The model.
   class Model
     include ActiveModel::Model
-    include Recipe
-    include Persistence
-    include Provisioning
-    extend Querying
 
-    # Store all attributes in this Hash.
+    include Recipe
+
     attr_reader :attributes
 
-    # Set attributes to the main collector before assigning them to
-    # methods.
-    def initialize(from_attrs={})
-      @attributes = from_attrs
+    def initialize(attributes={})
       super
+      @attributes = attributes
     end
 
-    # The JSON representation of each Model object is simply its
-    # attributes exposed as JSON.
-    def to_json(*arguments)
-      @json ||= attributes.to_json
+    # Update the current node and run Chef.
+    def save
+      update and run_chef
+    end
+
+    # Update all attributes and save to the current node.
+    def update_attributes(to_new_attributes={})
+      write(to_new_attributes) and save
     end
 
     protected
-    def config
-      Hibachi.config
+    def chef_server
+      @chef_server = ChefServer.connect
+    end
+
+    private
+    def update
+      logger.debug "Updating node config for #{cookbook} => #{attributes.to_json}"
+      chef_server.current_node.update_attributes cookbook => attributes
+    end
+
+    def run_chef
+      ChefRunner.run recipe, \
+        background: Hibachi.config.run_chef_in_background
+    end
+
+    def write(new_attributes)
+      @attributes.merge! new_attributes
+      attributes.each do |key, value|
+        writer = "#{key}="
+        send writer, value if respond_to? writer
+      end
     end
   end
 end
