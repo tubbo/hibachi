@@ -17,18 +17,23 @@ module Hibachi
     # running.
     CHEF_CMD = 'chef-client'
 
-    # Runs the local Chef::Client for the given recipe.
+    # Runs the local Chef::Client for the given recipe, in the
+    # background if that option is `true`.
     def self.run recipe, options={}
       converger = new recipe: recipe, params: options
-      converger.chef!
+      converger.run
       converger
     end
 
     # Run Chef on the instance of this runner.
-    def converge!
+    def run
       return true unless should_run?
-      run_chef_in_background and return true if background?
-      ensure_config_exists and run_chef
+      ensure_log_exists
+      if background?
+        run_chef_in_background
+      else
+        run_chef
+      end
     end
 
     # Test whether we should run Chef in the background by enqueuing a
@@ -54,13 +59,14 @@ module Hibachi
       Hibachi::Job.enqueue self
     end
 
-    def ensure_config_exists
-      run "touch #{config.log_path}"
-      log "Running Chef for '#{recipe}' at '#{Time.now}'..."
+    def ensure_log_exists
+      run "touch #{Hibachi.config.log_path}"
+      logger.debug "Started logging convergence at #{Time.now}"
     end
 
     def run_chef
-      chef "--run-list=#{recipe_name} --local-mode --log-level=debug"
+      logger.info "Running Chef for '#{recipe}' at '#{Time.now}'..."
+      chef "--run-list=#{run_list} --local-mode --log-level=debug"
     end
 
     def using_active_job?
@@ -68,18 +74,23 @@ module Hibachi
     end
 
     def chef options
-      run %(cd #{config.chef_dir} && #{COMMAND} -l debug #{options})
+      run %(cd #{config.chef_dir} && #{COMMAND} #{options} >> #{log_path})
     end
 
-    def log message
-      run %(echo "#{message}" >> #{config.chef_json_path})
+    def logger
+      @logger ||= Logger.new log_path
+    end
+
+    def log_path
+      @log_path ||= Hibachi.config.log_path
     end
 
     def run command
-      `#{command}` and $?.success?
+      `#{command}`
+      $?.success?
     end
 
-    def recipe_name
+    def run_list
       "recipe[#{recipe}]"
     end
   end
