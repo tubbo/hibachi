@@ -15,7 +15,7 @@ module Hibachi
     # `chef-solo`, but with the recent push on `chef-zero`, it can now
     # run the client as long as a chef-zero instance is available and
     # running.
-    CHEF_CMD = 'chef-client'
+    COMMAND = 'chef-client'
 
     # Runs the local Chef::Client for the given recipe, in the
     # background if that option is `true`.
