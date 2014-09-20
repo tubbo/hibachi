@@ -74,7 +74,7 @@ module Hibachi
     end
 
     def chef options
-      run %(cd #{config.chef_dir} && #{COMMAND} #{options} >> #{log_path})
+      run "#{COMMAND} #{options} >> #{log_path}"
     end
 
     def logger
