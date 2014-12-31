@@ -1,4 +1,6 @@
 module Hibachi
+  # Methods for querying the contents of a collection of attributes.
+  # Typically used for recipes with a collection of attributes.
   module Querying
     include Enumerable
 

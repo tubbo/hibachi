@@ -3,9 +3,22 @@ module Hibachi
   module Persistence
     extend ActiveSupport::Concern
 
+    module ClassMethods
+      # Accessor for the global Chef JSON.
+      def node
+        @node ||= Node.find Hibachi.config.node_name
+      end
+    end
+
     # Merge attrs and write to JSON.
     def save
-      persist and chef
+      run_callbacks :save do
+        if valid?
+          node.update_attributes recipe => new_recipe_attributes
+        else
+          false
+        end
+      end
     end
 
     # Update an existing model's attributes.
@@ -15,7 +28,7 @@ module Hibachi
 
     # Remove the given id from the JSON and re-run Chef.
     def destroy
-      clear and chef
+      clear and converge
     end
 
     # Test if this model appears in the Node JSON.
@@ -41,22 +54,6 @@ module Hibachi
       end
     end
 
-    def persist
-      @persisted ||= if new_record?
-        create
-      else
-        update
-      end
-    end
-
-    def create
-      node.merge! recipe => new_recipe_attributes
-    end
-
-    def update
-      node.merge! recipe_name => new_recipe_attributes
-    end
-
     def new_recipe_attributes
       if singleton?
         node[recipe].merge attributes
@@ -71,6 +68,11 @@ module Hibachi
       else
         node.delete id
       end
+    end
+
+    # Accessor for the global Chef JSON in an instance.
+    def node
+      self.class.node
     end
   end
 end

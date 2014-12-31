@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary       = %q{A Rails model layer for your Chef configuration.}
   spec.description   = "#{spec.summary} Control your Chef configs with Rails."
   spec.homepage      = "http://github.com/tubbo/hibachi"
-  spec.license       = "NCSA"
+  spec.license       = "All Rights Reserved"
 
   spec.files         = `git ls-files`.split($/)
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
@@ -19,6 +19,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency 'rails'
+  spec.add_dependency 'ridley'
 
   spec.add_development_dependency 'bundler', '~> 1.5'
   spec.add_development_dependency 'rake'

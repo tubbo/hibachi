@@ -2,7 +2,6 @@ require 'active_model'
 
 require 'hibachi/recipe'
 require 'hibachi/persistence'
-require 'hibachi/provisioning'
 require 'hibachi/querying'
 
 module Hibachi
@@ -15,7 +14,6 @@ module Hibachi
     include ActiveModel::Model
     include Recipe
     include Persistence
-    include Provisioning
     extend Querying
 
     # Store all attributes in this Hash.
