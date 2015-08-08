@@ -1,0 +1,7 @@
+To generate a model representing a singleton hash of attributes:
+
+    rails generate hibachi:model NAME field:type field:type
+
+To generate a model representing a collection of hashes:
+
+    rails generate hibachi:model NAME field:type field:type --plural

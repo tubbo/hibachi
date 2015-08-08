@@ -11,6 +11,10 @@ module Hibachi
       super params.merge id: id
     end
 
+    def self.pluralized!
+      self.plural = true
+    end
+
     def self.field(name, type: String, default: nil)
       property name, type: type, default: default
     end
