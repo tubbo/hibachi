@@ -1,5 +1,7 @@
 module Hibachi
-  # Data model for a node on the Chef server.
+  # Data model for a node on the Chef server. Maintains connectivity via
+  # the private Ridley client and a node object discovered by either the
+  # passed-in node name or the default configuration.
   class Node
     # @attr_reader [String]
     attr_reader :name
@@ -9,9 +11,16 @@ module Hibachi
 
     # @param [String] name - Name of this node on the Chef server
     # @param [String] key - Attribute key this object manipulates
-    def initialize(name: Hibachi.config.node_name, key: '')
-      @name = name
+    def initialize(name: nil, key: '')
+      @name = name || Hibachi.config.node_name
       @key = key
+    end
+
+    # All attributes for this node, scoped by the given param key.
+    #
+    # @return [Hash]
+    def attributes
+      node.attributes[key]
     end
 
     # Update the attributes hash for this node.
@@ -20,7 +29,7 @@ module Hibachi
     # @param [Hash] params - New attributes to merge in.
     # @return [Boolean]
     def update(id: nil, params: {})
-      current_node.update attributes: merge(id, params)
+      node.update attributes: merge(id, params)
     end
 
     private
@@ -30,20 +39,13 @@ module Hibachi
     # @param [Hash] new_attributes
     # @return [Hash]
     def merge(id, new_attributes)
-      current_attributes(id).merge(new_attributes)
+      scoped_attributes(id).merge(new_attributes)
     end
 
     # @private
     # @param [Integer] id (optional)
-    def current_attributes(id: nil)
-      return node_attributes[id] if id.present?
-      node_attributes
-    end
-
-    # @private
-    # @return [Hash]
-    def node_attributes
-      node.attributes[key]
+    def scoped_attributes(id: nil)
+      attributes[id] || attributes
     end
 
     # @private

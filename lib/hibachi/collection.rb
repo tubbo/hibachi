@@ -15,7 +15,7 @@ module Hibachi
     delegate :each, to: :models
 
     def find(id = nil)
-      model.new(node_attributes) unless model.plural
+      model.new(node.attributes) unless model.pluralized
       models.find { |model| model.id == id }
     end
 
