@@ -36,7 +36,7 @@ module Hibachi
     end
 
     def node
-      @node ||= Node.new param: param
+      @node ||= Node.new param: param, name: model.node_name
     end
   end
 end

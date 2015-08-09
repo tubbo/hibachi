@@ -17,21 +17,16 @@ module Hibachi
   #   iface.name # => 'eth1'
   class Model
     include ActiveAttr::Model
-    include ActiveModel::MassAssignmentSecurity
-    include ActiveModel::ForbiddenAttributesProtection
 
     extend Enumerable
 
     class_attribute :pluralized, default: false
+    class_attribute :node_name, default: Hibachi.config.node_name
 
-    attr_reader :node
+    define_model_callbacks :save, :create, :update, :destroy
 
     def self.pluralized!
       self.pluralized = true
-    end
-
-    def self.field(name, type: String, default: nil)
-      attribute name, type: type, default: default
     end
 
     def self.create(params = {})
@@ -44,22 +39,15 @@ module Hibachi
       @collection ||= Collection.new model_name
     end
 
-    def self.method_missing(method, *arguments)
-      return super unless respond_to?(method)
-      all.send method, *arguments
-    end
-
-    def self.respond_to?(method)
-      all.respond_to?(method) || super
-    end
-
     alias_method :[],   :read_attribute
     alias_method :[]=,  :write_attribute
 
-    field :id, type: Integer
+    attribute :id, type: Integer
 
     def save
-      valid? && (create || update)
+      run_callbacks :save do
+        valid? && (create || update)
+      end
     end
 
     def to_param
@@ -99,7 +87,10 @@ module Hibachi
     end
 
     def node
-      @node ||= Node.new param: model_name.param_key
+      @node ||= Node.new(
+        name: self.class.node_name,
+        param: model_name.param_key
+      )
     end
   end
 end

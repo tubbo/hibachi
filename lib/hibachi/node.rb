@@ -11,8 +11,8 @@ module Hibachi
 
     # @param [String] name - Name of this node on the Chef server
     # @param [String] key - Attribute key this object manipulates
-    def initialize(name: nil, key: '')
-      @name = name || Hibachi.config.node_name
+    def initialize(name: '', key: '')
+      @name = name
       @key = key
     end
 

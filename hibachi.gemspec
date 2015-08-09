@@ -10,11 +10,13 @@ Gem::Specification.new do |spec|
   spec.email         = ["tscott@weblinc.com"]
 
   spec.summary       = "An Object-Resource Mapper for Chef configuration."
-  spec.description   = "#{spec.summary} Change your Chef code and run Chef with your Rails app."
+  spec.description   = "#{spec.summary}"
   spec.homepage      = "http://github.com/tubbo/hibachi"
   spec.license       = "MIT"
 
-  spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(spec)/}) }
+  spec.files         = `git ls-files -z`.split("\x0").reject do |f|
+    f.match(/\Aspec/)
+  end
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]

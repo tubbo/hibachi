@@ -1,10 +1,11 @@
 module Hibachi
   class Fake < Model
-    field :name
+    attribute :name
   end
 
   class Fakes < Model
     pluralized!
-    field :name
+
+    attribute :name
   end
 end

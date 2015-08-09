@@ -9,16 +9,25 @@ require "hibachi/version"
 # run on its local machine, as well as others.
 module Hibachi
   extend ActiveSupport::Autoload
-  extend ActiveSupport::Configurable
+
+  include ActiveSupport::Configurable
 
   autoload :Engine
   autoload :Model
   autoload :Collection
   autoload :Node
 
-  config.org_name = 'waxpoetic'
-  config.server_url = "https://api.chef.io/organizations/#{config.org_name}"
-  config.client_name = ENV['USER']
-  config.client_key_path = File.join(Rails.root, '.chef', "#{config.client_name}.pem")
-  config.node_name = 'hibachi'
+  # URL to the Chef server.
+  config_accessor :server_url
+
+  # The client name we are connecting as on the Chef server.
+  config_accessor :client_name
+
+  # Path to the private key that allows us to connect as the
+  # aforementioned client on the Chef server.
+  config_accessor :client_key
+
+  # Default node that we will be connecting to. You can override this by
+  # passing +node_name 'foo'+ in your model class.
+  config_accessor :node_name
 end
