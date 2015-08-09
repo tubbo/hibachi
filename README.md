@@ -1,8 +1,8 @@
 # Hibachi
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/hibachi`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+An object-resource mapper for your Chef server. Enables a Rails app to
+manipulate its own Chef node attributes and trigger a +chef-client+
+run on its local machine, as well as others.
 
 ## Installation
 
@@ -14,26 +14,79 @@ gem 'hibachi'
 
 And then execute:
 
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install hibachi
+```bash
+$ bundle
+```
 
 ## Usage
 
-TODO: Write usage instructions here
+Generate a new model with the following command:
+
+```bash
+$ rails generate hibachi:model network_interface name is_static:boolean address netmask gateway --plural
+```
+
+This will generate the following model and an accompanying test:
+
+```ruby
+class NetworkInterface < Hibachi::Model
+  pluralized!
+
+  field :name, type: String
+  field :is_static, type: Boolean
+  field :address, type: String
+  field :netmask, type: String
+  field :gateway, type: String
+end
+```
+
+To learn more about how to use Hibachi, [visit the Wiki][wiki]
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `bin/console` for an interactive prompt that will allow you to experiment.
+You can run `bin/setup` to install all dependencies in one go, and
+`bin/console` for an interactive console prompt. We also provide `rake`
+and `rspec` commands for running regular shell tasks.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release` to create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+### Running Tests
 
-## Contributing
+To run tests and check against the Ruby style guide:
 
-1. Fork it ( https://github.com/[my-github-username]/hibachi/fork )
+```bash
+$ bin/rake test
+```
+
+### Will It Build?
+
+Make sure the gem builds properly with the default Rake task:
+
+```bash
+$ rake
+```
+
+**NOTE:** This also runs tests.
+
+### Releasing
+
+To release a new version of this gem, bump the version number in
+`lib/hibachi/version.rb` and run the following command to push a Git tag
+to the server. Travis will handle deploying the gem to RubyGems on new
+successful tag builds:
+
+```bash
+$ rake publish
+```
+
+### Contributing
+
+A passing build is required for any contributions made to this project.
+We also prefer you write tests for any new features you wish to add and
+use the test framework to highlight how and why bug fixes had to occur.
+
+1. Fork it ( https://github.com/tubbo/hibachi/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
+
+[wiki]: https://github.com/tubbo/hibachi/wiki

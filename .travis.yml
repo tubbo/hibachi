@@ -1,3 +1,14 @@
 language: ruby
 rvm:
-  - 2.0.0
+- 2.0.0
+- 1.9.3
+- jruby-19mode
+- rbx-2
+deploy:
+  provider: rubygems
+  api_key:
+    secure: koDtGCqYDTpQ/8M09hdmC/qvXxktruQ42T3Yxo2xQowyA/WWUdpqRElnLGxeIU+cqM7iZxcQyQDSL14esS6A5IyfOQp/S97j+z0220TueWx4Tgp8PWdlgXxVfYWD10UAaTjS+EqoBmDxFkp8pYd8F8U6ID6aSmY0x6/PXTdFWas=
+  gem: hibachi
+  on:
+    tags: true
+    repo: tubbo/hibachi

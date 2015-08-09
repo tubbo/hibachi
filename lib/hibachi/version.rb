@@ -1,3 +1,5 @@
+# :nodoc:
 module Hibachi
-  VERSION = "0.1.0"
+  # @object [String]
+  VERSION = "0.0.1"
 end
