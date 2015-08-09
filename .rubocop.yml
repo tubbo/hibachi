@@ -1,0 +1,13 @@
+AllCops:
+  RunRailsCops: true
+  Exclude:
+    - vendor/**
+    - spec/dummy/**/*
+    - bin/*
+
+Style/StringLiterals:
+  Enabled: false
+
+Style/Documentation:
+  Exclude:
+    - spec/**/*

@@ -1,22 +1,37 @@
 module Hibachi
+  # Base class for Chef-driven model objects in the Rails app.
+  #
+  # @example Defining a new model
+  #   class NetworkInterface < Hibachi::Model
+  #     pluralized!
+  #
+  #     field :name
+  #   end
+  #
+  # @example Creating a new record
+  #   NetworkInterface.create name: 'eth0'
+  #
+  # @example Updating an existing record
+  #   iface = NetworkInterface.find_by name: 'eth0'
+  #   iface.update_attributes name: 'eth1'
+  #   iface.name # => 'eth1'
   class Model
     include ActiveAttr::Model
+    include ActiveModel::MassAssignmentSecurity
+    include ActiveModel::ForbiddenAttributesProtection
 
     extend Enumerable
 
-    class_attribute :plural, default: false
+    class_attribute :pluralized, default: false
 
-    def initialize(params = {}, id = nil)
-      return super unless id.present?
-      super params.merge id: id
-    end
+    attr_reader :node
 
     def self.pluralized!
-      self.plural = true
+      self.pluralized = true
     end
 
     def self.field(name, type: String, default: nil)
-      property name, type: type, default: default
+      attribute name, type: type, default: default
     end
 
     def self.create(params = {})
@@ -38,12 +53,13 @@ module Hibachi
       all.respond_to?(method) || super
     end
 
-    delegate :[], :[]=, to: :attributes
+    alias_method :[],   :read_attribute
+    alias_method :[]=,  :write_attribute
 
     field :id, type: Integer
 
     def save
-      valid? && update
+      valid? && (create || update)
     end
 
     def to_param
@@ -54,22 +70,36 @@ module Hibachi
       self.class.plural || false
     end
 
-    def persisted?
-      id.present?
-    end
+    alias_method :persisted?, :id?
 
     def new_record?
-      not persisted?
+      !persisted?
+    end
+
+    def update_attributes(new_attributes = {})
+      new_attributes.all? do |name, value|
+        self[name] = value
+      end && save
     end
 
     private
 
-    def update
-      all.update param_name, attributes, id: id
+    def create
+      return unless new_record?
+      run_callbacks(:create) { persist }
     end
 
-    def param_name
-      self.class.model_name.param_name
+    def update
+      return unless persisted?
+      run_callbacks(:update) { persist }
+    end
+
+    def persist
+      node.update attributes, id: id
+    end
+
+    def node
+      @node ||= Node.new param: model_name.param_key
     end
   end
 end

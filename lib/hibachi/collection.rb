@@ -1,8 +1,11 @@
 module Hibachi
+  # Collection object which also stores the connection to the Node
+  # resource.
   class Collection
     include Enumerable
 
-    attr_reader :model, :param
+    attr_reader :model
+    attr_reader :param
 
     def initialize(model_name)
       @model = model_name.to_s.constantize
@@ -12,10 +15,8 @@ module Hibachi
     delegate :each, to: :models
 
     def find(id = nil)
-      return model.new(node_attributes) unless id.present?
-      models.find do |model_attributes|
-        model_attributes['id'] == id
-      end
+      model.new(node_attributes) unless model.plural
+      models.find { |model| model.id == id }
     end
 
     def where(params = {})
@@ -26,26 +27,16 @@ module Hibachi
       end
     end
 
-    def update(param, attributes = {}, id: nil)
-      existing, key = if id.present?
-                   [ models, id ]
-                 else
-                   [ models, param ]
-                 end
-
-      node.update attributes: existing.merge(key => attributes)
-    end
-
     private
 
     def models
-      node_attributes.each do |id, attributes|
+      @models ||= node.attributes.map do |id, attributes|
         model.new attributes, id
       end
     end
 
-    def node_attributes
-      node.attributes[param]
+    def node
+      @node ||= Node.new param: param
     end
   end
 end
