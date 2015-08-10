@@ -16,6 +16,7 @@ module Hibachi
   autoload :Model
   autoload :Collection
   autoload :Node
+  autoload :NodeAttributes
 
   # URL to the Chef server.
   config_accessor :server_url

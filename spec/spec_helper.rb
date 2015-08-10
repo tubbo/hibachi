@@ -7,6 +7,7 @@ ENV["RAILS_ENV"] = "test"
 # require File.expand_path("../../spec/dummy/config/environment.rb", __FILE__)
 # require 'rspec/rails'
 require "active_attr/rspec"
+require 'pry'
 
 # Load support files
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }

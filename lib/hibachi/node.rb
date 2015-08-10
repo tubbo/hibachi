@@ -36,16 +36,10 @@ module Hibachi
 
     # @private
     # @param [Integer] id (optional)
-    # @param [Hash] new_attributes
+    # @param [Hash] params
     # @return [Hash]
-    def merge(id, new_attributes)
-      scoped_attributes(id).merge(new_attributes)
-    end
-
-    # @private
-    # @param [Integer] id (optional)
-    def scoped_attributes(id: nil)
-      attributes[id] || attributes
+    def merge(id, params)
+      NodeAttributes.merge id, params, attributes
     end
 
     # @private

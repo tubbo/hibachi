@@ -30,8 +30,8 @@ module Hibachi
     private
 
     def models
-      @models ||= node.attributes.map do |id, attributes|
-        model.new attributes, id
+      @models ||= node.attributes.map do |attributes|
+        model.new attributes
       end
     end
 
