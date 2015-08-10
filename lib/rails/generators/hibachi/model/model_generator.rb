@@ -8,7 +8,9 @@ module Hibachi
 
     class_option :plural, type: :boolean, default: false
 
-    # :nodoc:
+    # Create the model file.
+    #
+    # @private
     def create_model_file
       template 'model.rb.tt', model_file_path
     end
@@ -17,7 +19,7 @@ module Hibachi
 
     private
 
-    # :nodoc:
+    # @private
     def model_file_path
       File.join 'app', 'models', class_path, "#{file_name}.rb"
     end
