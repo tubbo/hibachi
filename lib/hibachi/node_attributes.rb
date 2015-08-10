@@ -36,7 +36,7 @@ module Hibachi
     # @param [Hash] attributes
     # @return [Hash]
     def self.merge(id = nil, params, attributes)
-      new(*args).result
+      new(id, params, attributes).result
     end
 
     # Test if this model has already been persisted to the database by
