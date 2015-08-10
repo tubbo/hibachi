@@ -1,8 +1,14 @@
 # Hibachi
 
+[![Build Status](https://travis-ci.org/tubbo/hibachi.svg?branch=master)](https://travis-ci.org/tubbo/hibachi)
+[![Code Climate](https://codeclimate.com/github/tubbo/hibachi/badges/gpa.svg)](https://codeclimate.com/github/tubbo/hibachi)
+[![Test Coverage](https://codeclimate.com/github/tubbo/hibachi/badges/coverage.svg)](https://codeclimate.com/github/tubbo/hibachi/coverage)
+[![Inline docs](http://inch-ci.org/github/tubbo/hibachi.svg?branch=master)](http://inch-ci.org/github/tubbo/hibachi)
+
 An object-resource mapper for your Chef server. Enables a Rails app to
-manipulate its own Chef node attributes and trigger a +chef-client+
-run on its local machine, as well as others.
+manipulate its own Chef node attributes and trigger a `chef-client`
+run on its local machine, as well as any others your client has access
+to.
 
 ## Installation
 
@@ -53,24 +59,14 @@ and `rspec` commands for running regular shell tasks.
 To run tests and check against the Ruby style guide:
 
 ```bash
-$ bin/rake test
-```
-
-### Will It Build?
-
-Make sure the gem builds properly with the default Rake task:
-
-```bash
 $ rake
 ```
-
-**NOTE:** This also runs tests.
 
 ### Releasing
 
 To release a new version of this gem, bump the version number in
 `lib/hibachi/version.rb` and run the following command to push a Git tag
-to the server. Travis will handle deploying the gem to RubyGems on new
+to the server. [Travis][ci] will handle deploying the gem to RubyGems on new
 successful tag builds:
 
 ```bash
@@ -90,3 +86,4 @@ use the test framework to highlight how and why bug fixes had to occur.
 5. Create a new Pull Request
 
 [wiki]: https://github.com/tubbo/hibachi/wiki
+[ci]: https://travis-ci.org
