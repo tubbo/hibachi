@@ -2,6 +2,8 @@ module Hibachi
   # Data model for a node on the Chef server. Maintains connectivity via
   # the private Ridley client and a node object discovered by either the
   # passed-in node name or the default configuration.
+  #
+  # @api private
   class Node
     # Name of the node we are updating.
     #
