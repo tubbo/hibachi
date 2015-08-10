@@ -6,7 +6,9 @@ require 'rubocop/rake_task'
 require 'yard'
 require 'hibachi/version'
 
-RSpec::Core::RakeTask.new :spec
+RSpec::Core::RakeTask.new :spec do |t|
+  t.rspec_opts = '--format=progress'
+end
 
 RuboCop::RakeTask.new :lint
 
