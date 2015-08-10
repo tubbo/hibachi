@@ -28,6 +28,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'yard'
   spec.add_development_dependency 'sqlite3'
   spec.add_development_dependency 'travis'
+  spec.add_development_dependency 'codeclimate-test-reporter'
 
   spec.add_dependency 'rails'
   spec.add_dependency 'ridley'

@@ -8,6 +8,7 @@ ENV["RAILS_ENV"] = "test"
 # require 'rspec/rails'
 require "active_attr/rspec"
 require 'pry'
+require 'codeclimate-test-reporter'
 
 # Load support files
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
@@ -28,3 +29,5 @@ end
 # RSpec.configure do |config|
 #   config.global_fixtures = :all
 # end
+
+CodeClimate::TestReporter.start

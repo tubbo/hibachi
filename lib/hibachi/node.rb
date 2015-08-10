@@ -3,9 +3,13 @@ module Hibachi
   # the private Ridley client and a node object discovered by either the
   # passed-in node name or the default configuration.
   class Node
+    # Name of the node we are updating.
+    #
     # @attr_reader [String]
     attr_reader :name
 
+    # Attribute key for the attributes hash we are updating.
+    #
     # @attr_reader [String]
     attr_reader :key
 

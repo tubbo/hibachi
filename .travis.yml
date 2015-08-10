@@ -1,9 +1,6 @@
 language: ruby
 rvm:
 - 2.0.0
-- 1.9.3
-- jruby-19mode
-- rbx-2
 deploy:
   provider: rubygems
   api_key:
@@ -12,3 +9,7 @@ deploy:
   on:
     tags: true
     repo: tubbo/hibachi
+addons:
+  code_climate:
+    repo_token:
+      secure: UKeJwZLZ/ca8uCPb19S4PfqoDgYXucygJ7XRDfUM6KO6H43ie6adXqrV1CIIxM9oKK4mq3+XZPA8d5IMPE3E6Nq98NLEvukHCU1mwWJBjcLZzxGousFNbyFVWR7PN9Qotx5u8gRuYRfg4nNnYYNFbHB2KrHIFaUDbUP2Qn9MYnY
