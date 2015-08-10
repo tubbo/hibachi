@@ -20,6 +20,12 @@ module Hibachi
       expect(Fake).not_to be_pluralized
     end
 
+    it 'can define a custom node name' do
+      Fake.node_name 'new-node'
+
+      expect(Fake._node_name).to eq('new-node')
+    end
+
     it 'defines fields as attributes' do
       expect(subject.name).to eq('test')
     end
