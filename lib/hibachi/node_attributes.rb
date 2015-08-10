@@ -64,12 +64,12 @@ module Hibachi
     def result
       case
       when persisted?
-        self.attributes[index] = attributes[index].merge(params)
-        self.attributes
+        @attributes[index] = attributes[index].merge(params)
+        attributes
       when new_record?
-        self.attributes.push(params)
+        @attributes.push(params)
       else
-        self.attributes.merge(params)
+        @attributes.merge(params)
       end
     end
 

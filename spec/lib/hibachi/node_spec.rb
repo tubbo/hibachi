@@ -49,12 +49,15 @@ module Hibachi
     end
 
     it 'updates attrs on the chef server' do
-      allow(node).to receive(:update).with(attributes: [ { id: 1, test: true } ]).and_return(true)
+      allow(node).to \
+        receive(:update)
+        .with(attributes: [{ id: 1, test: true }])
+        .and_return(true)
       expect(subject.update(id: 1, params: { test: true })).to eq(true)
     end
 
     it 'merges given attrs with current attrs' do
-      expect(subject.send(:merge, 1, { test: true })).to eq([
+      expect(subject.send(:merge, 1, test: true)).to eq([
         { id: 1, test: true }
       ])
     end

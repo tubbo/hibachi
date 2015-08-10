@@ -56,7 +56,10 @@ module Hibachi
 
     it 'saves to the chef node' do
       allow(node).to receive(:attributes).and_return({})
-      allow(node).to receive(:update).with(subject.attributes, id: nil).and_return(true)
+      allow(node).to \
+        receive(:update)
+        .with(subject.attributes, id: nil)
+        .and_return(true)
       expect(subject).to be_valid
       expect(subject.send :create).to eq(true)
       expect(subject.save).to eq(true)

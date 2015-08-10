@@ -34,7 +34,7 @@ module Hibachi
       # Configure a custom node to send attributes to.
       #
       # @param [String] custom_node_name
-      def node_name(custom_node_name="")
+      def node_name(custom_node_name = "")
         self._node_name = custom_node_name
       end
 

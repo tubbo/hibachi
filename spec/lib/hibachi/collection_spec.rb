@@ -15,7 +15,7 @@ module Hibachi
     end
 
     let :node do
-      double 'Node', attributes: [ model.attributes ]
+      double 'Node', attributes: [model.attributes]
     end
 
     subject { Collection.new model.model_name }

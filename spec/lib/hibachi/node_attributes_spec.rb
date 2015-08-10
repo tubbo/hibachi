@@ -16,7 +16,7 @@ module Hibachi
 
     context 'with an array of hashes' do
       let :attributes do
-        [ params.merge(id: id) ]
+        [params.merge(id: id)]
       end
 
       let :index do
@@ -47,4 +47,3 @@ module Hibachi
     end
   end
 end
-
